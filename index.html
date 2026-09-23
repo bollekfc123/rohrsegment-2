@@ -1,0 +1,63 @@
+<!doctype html><html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.webmanifest">
+<title>Rohr-Schnitt Rechner</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#0f172a;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:760px;margin:auto;padding:14px 12px 40px}.card{background:#fff;border-radius:20px;padding:17px;margin:10px 0;box-shadow:0 4px 18px #0001}
+h1{font-size:26px;margin:0 0 3px}h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:16px 0 9px}.sub,.hint{color:#64748b;font-size:14px}.grid,.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:13px;font-weight:750;margin:0 0 6px;color:#334155}input,select,button{width:100%;min-height:48px;border-radius:13px;border:1px solid #cbd5e1;padding:11px 12px;font:inherit;background:#fff}
+button{border:0;background:#0f172a;color:#fff;font-weight:750}.secondary{background:#e2e8f0!important;color:#0f172a!important}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stat{background:#f8fafc;border-radius:14px;padding:13px}.stat b{display:block;font-size:19px}.stat span{font-size:12px;color:#64748b}
+.chartbox{background:#f8fafc;border-radius:15px;padding:8px;overflow:hidden}canvas{display:block;width:100%;height:240px}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:330px}th,td{padding:9px 7px;border-bottom:1px solid #e2e8f0;text-align:right}th:first-child,td:first-child{text-align:left}th{font-size:12px;color:#64748b}.highlight{font-weight:800}
+.note{background:#f8fafc;border-radius:14px;padding:12px;font-size:13px;line-height:1.5;color:#475569}.badge{font-size:11px;padding:4px 8px;border-radius:99px;background:#e2e8f0}
+.title{display:flex;align-items:center;gap:8px}@media(max-width:520px){.grid,.statgrid{grid-template-columns:1fr 1fr}}@media print{body{background:#fff}.no-print{display:none}.card{box-shadow:none;border:1px solid #ddd}}
+</style></head><body><main>
+<div class="card"><h1>Rohr-Schnitt Rechner</h1><p class="sub">Schräge Schnitte und Rohrbogen berechnen</p></div>
+
+<div class="card"><h2>Gerader Rohrschnitt</h2><div class="grid">
+<div><label>Winkel (°)</label><input id="angle" type="number" value="2" step=".01" min="0"></div>
+<div><label>Durchmesser (mm)</label><input id="diameter" type="number" value="800" step="1" min="1"></div>
+<div><label>Abstand (mm)</label><input id="spacing" type="number" value="100" step="1" min="1"></div>
+<div><label>Nullpunkt</label><select id="start"><option value="high">höchster Punkt</option><option value="low">tiefster Punkt</option></select></div></div>
+<div class="actions no-print"><button onclick="window.print()">Drucken</button><button class="secondary" onclick="resetStraight()">Zurücksetzen</button></div></div>
+
+<div class="card"><h2>Gerader Schnitt – Ergebnis</h2><div class="statgrid">
+<div class="stat"><span>Rohrumfang</span><b id="circ">–</b></div><div class="stat"><span>max. Höhenunterschied</span><b id="max">–</b></div></div>
+<div class="chartbox" style="margin-top:10px"><canvas id="chart"></canvas></div><div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Abstand</th><th>Höhe</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+
+<div class="card"><div class="title"><h2>90°-Rohrbogen → beliebiger Winkel</h2><span class="badge">NEU</span></div>
+<p class="hint">Zum Beispiel aus einem 90°-Bogen einen 45°, 30° oder 60° Bogen machen.</p>
+<h3>1. Bogen festlegen</h3><div class="grid">
+<div><label>Rohrdurchmesser (mm)</label><input id="bendD" type="number" value="100" step="1" min="1"></div>
+<div><label>Ausgangswinkel (°)</label><input id="bendStartAngle" type="number" value="90" step=".1" min=".1" max="360"></div>
+<div><label>Gewünschter Winkel (°)</label><input id="bendTargetAngle" type="number" value="45" step=".1" min=".1" max="360"></div>
+<div><label>Radiusart</label><select id="radiusMode"><option value="1.5">Standard 1,5 × D</option><option value="1">Standard 1 × D</option><option value="2">Standard 2 × D</option><option value="3">Standard 3 × D</option><option value="5">Standard 5 × D</option><option value="custom">Eigener Radius</option></select></div>
+<div id="customRadiusBox" style="display:none"><label>Eigener Biegeradius (mm)</label><input id="customRadius" type="number" value="150" step="1" min="1"></div>
+<div><label>Anreißpunkte rund ums Rohr</label><select id="bendPoints"><option value="4">4 Punkte</option><option value="8" selected>8 Punkte</option><option value="12">12 Punkte</option><option value="16">16 Punkte</option></select></div>
+</div>
+<div class="statgrid" style="margin-top:12px">
+<div class="stat"><span>Biegeradius Mitte</span><b id="bendR">–</b></div><div class="stat"><span>volle 90°-Bogenlänge</span><b id="full90">–</b></div>
+<div class="stat"><span>Ziel-Bogenlänge</span><b id="targetArc">–</b></div><div class="stat"><span>abzuschneidende Bogenlänge</span><b id="removeArc">–</b></div></div>
+<div class="note" style="margin-top:12px"><b>Anzeichnen:</b> Vom Ende des vorhandenen Bogens entlang der <b>Rohr-Mittellinie</b> um die angegebene abzuschneidende Bogenlänge zurückmessen. Dort liegt der Schnitt für den gewünschten Restwinkel.</div>
+<div class="chartbox" style="margin-top:12px"><canvas id="bendChart"></canvas></div>
+<div class="note" style="margin-top:12px"><b>Anreißtabelle:</b> Die Werte zeigen, wie weit du vom vorhandenen Bogenende entlang der jeweiligen Mantellinie zurückmessen musst. Außen ist das Maß wegen des größeren Biegeradius größer, innen kleiner. Die Punkte sind gleichmäßig über den Rohrumfang verteilt.</div>
+<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Punkt</th><th>Umfangsposition</th><th>Seite</th><th>Rückmaß vom Ende</th></tr></thead><tbody id="bendMarkRows"></tbody></table></div>
+<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Wert</th><th>Ergebnis</th></tr></thead><tbody id="bendRows"></tbody></table></div></div>
+<div class="card note"><b>Hinweis:</b> Die Bogenfunktion berechnet die Länge entlang der Bogen-Mittellinie. Für eine umlaufende Anreißlinie auf dem gekrümmten Rohr kann eine zusätzliche Abwicklung erforderlich sein.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function sv(){let a=+$('angle').value||0,d=+$('diameter').value||1,s=+$('spacing').value||1;return{a,d,s,c:Math.PI*d,r:d/2,t:Math.tan(a*Math.PI/180),start:$('start').value}}
+function hAt(x,v){let y=v.r*(1-Math.cos(x/v.c*2*Math.PI))*v.t;return v.start==='low'?v.d*v.t-y:y}
+function straight(){let v=sv();$('circ').textContent=v.c.toFixed(1)+' mm';$('max').textContent=(v.d*v.t).toFixed(2)+' mm';let r=$('rows');r.innerHTML='';for(let x=0;x<=v.c+.001;x+=v.s){x=Math.min(x,v.c);r.innerHTML+=`<tr><td>${x.toFixed(1)} mm</td><td class="highlight">${hAt(x,v).toFixed(2)} mm</td></tr>`;if(x>=v.c)break}drawStraight(v)}
+function drawStraight(v){let c=$('chart'),d=devicePixelRatio||1,w=c.clientWidth,h=240;c.width=w*d;c.height=h*d;let x=c.getContext('2d');x.scale(d,d);let p={l:42,r:12,t:15,b:32},pw=w-p.l-p.r,ph=h-p.t-p.b,m=Math.max(v.d*v.t,.1);x.strokeStyle='#cbd5e1';x.beginPath();x.moveTo(p.l,p.t);x.lineTo(p.l,h-p.b);x.lineTo(w-p.r,h-p.b);x.stroke();x.strokeStyle='#0f172a';x.lineWidth=2.5;x.beginPath();for(let i=0;i<=200;i++){let q=v.c*i/200,y=hAt(q,v),px=p.l+pw*q/v.c,py=h-p.b-ph*y/m;i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
+function resetStraight(){$('angle').value=2;$('diameter').value=800;$('spacing').value=100;$('start').value='high';straight()}
+function bend(){let d=+$('bendD').value||1,start=+$('bendStartAngle').value||90,target=Math.min(+$('bendTargetAngle').value||45,start),mode=$('radiusMode').value,R=mode==='custom'?(+$('customRadius').value||1):d*+mode;let sa=R*start*Math.PI/180,ta=R*target*Math.PI/180,rm=Math.max(0,sa-ta);$('bendR').textContent=R.toFixed(1)+' mm';$('full90').textContent=(R*Math.PI/2).toFixed(1)+' mm';$('targetArc').textContent=ta.toFixed(1)+' mm';$('removeArc').textContent=rm.toFixed(1)+' mm';
+let n=+$('bendPoints').value||8, br=[];
+for(let i=0;i<n;i++){let deg=i*360/n,rad=deg*Math.PI/180, surfaceR=R+(d/2)*Math.cos(rad), measure=Math.max(0,(start-target)*Math.PI/180*surfaceR); let side=Math.abs(Math.cos(rad))>0.707?'Außen/Innen':Math.abs(Math.sin(rad))>0.707?'oben/unten':'seitlich'; if(Math.cos(rad)>0.707) side='außen'; else if(Math.cos(rad)<-0.707) side='innen'; else if(Math.sin(rad)>0.707) side='oben'; else if(Math.sin(rad)<-0.707) side='unten'; br.push(`<tr><td>${i+1}</td><td>${deg.toFixed(1)}°</td><td>${side}</td><td class="highlight">${measure.toFixed(1)} mm</td></tr>`)} $('bendMarkRows').innerHTML=br.join('');let rows=[['Ausgangswinkel',start.toFixed(1)+'°'],['Zielwinkel',target.toFixed(1)+'°'],['Biegeradius Mitte',R.toFixed(1)+' mm'],['Ausgangs-Bogenlänge',sa.toFixed(1)+' mm'],['Ziel-Bogenlänge',ta.toFixed(1)+' mm'],['Vom Ende zurückmessen',rm.toFixed(1)+' mm'],['Restwinkel',target.toFixed(1)+'°']];$('bendRows').innerHTML=rows.map(a=>`<tr><td>${a[0]}</td><td class="highlight">${a[1]}</td></tr>`).join('');drawBend(R,start,target)}
+function drawBend(R,start,target){let c=$('bendChart'),d=devicePixelRatio||1,w=c.clientWidth,h=240;c.width=w*d;c.height=h*d;let x=c.getContext('2d');x.scale(d,d);x.clearRect(0,0,w,h);let cx=w/2,cy=h-30,scale=Math.min((w-55)/(R*1.9),(h-60)/(R*1.15));let pt=z=>[cx+Math.cos(z*Math.PI/180)*R*scale,cy-Math.sin(z*Math.PI/180)*R*scale];x.strokeStyle='#94a3b8';x.lineWidth=18;x.lineCap='round';x.beginPath();for(let i=0;i<=90;i++){let p=pt(i);i?x.lineTo(...p):x.moveTo(...p)}x.stroke();x.strokeStyle='#0f172a';x.lineWidth=3;x.beginPath();for(let i=0;i<=100;i++){let p=pt((start-target)*i/100);i?x.lineTo(...p):x.moveTo(...p)}x.stroke();x.fillStyle='#0f172a';x.font='12px system-ui';x.fillText('90° Ausgang',18,20);x.fillText('Ziel: '+target.toFixed(1)+'°',18,38)}
+$('radiusMode').addEventListener('change',()=>{$('customRadiusBox').style.display=$('radiusMode').value==='custom'?'block':'none';bend()});
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',()=>{straight();bend()}));window.addEventListener('resize',()=>{straight();bend()});straight();bend();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
