@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<link rel="manifest" href="manifest.webmanifest">
+<title>MyPipe</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1a2a;--panel2:#101f31;--line:#26384c;--text:#f5f8fb;--muted:#91a4b8;--blue:#2ea7ff;--blue2:#0b78d0;--steel:#b9c6d2;--good:#55d6a5;--shadow:0 16px 40px rgba(0,0,0,.28)}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(circle at 50% -10%,#183452 0,#07111f 48%,#050c15 100%);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:900px;margin:auto;padding:14px 12px 42px}.top{background:linear-gradient(145deg,#12253a,#091523);border:1px solid #294158;border-radius:24px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.top:after{content:"";position:absolute;inset:auto -30px -65px auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#2ea7ff33,transparent 68%)}
+.brand{display:flex;align-items:center;gap:13px;position:relative;z-index:1}.logo{width:58px;height:58px;border-radius:16px;background:linear-gradient(145deg,#d7e0e8,#5e7183 48%,#1d2c3a);box-shadow:inset 0 1px 2px #fff8,0 6px 16px #0006;display:grid;place-items:center;flex:0 0 auto}.logo svg{width:45px;height:45px}.brand h1{font-size:30px;letter-spacing:.4px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;position:relative;z-index:1}.tab{appearance:none;border:1px solid #2b4055;background:#0b1725;color:#aebdcb;border-radius:14px;min-height:58px;padding:8px 7px;font:inherit;font-weight:800;cursor:pointer;transition:.15s}.tab small{display:block;font-size:10px;font-weight:600;color:#71879c;margin-top:2px}.tab.active{background:linear-gradient(180deg,#1598ef,#0869b9);border-color:#39b2ff;color:#fff;box-shadow:0 7px 18px #007fe94d}.tab.active small{color:#d8efff}
+.section{display:none}.section.active{display:block}.card{background:linear-gradient(145deg,#0e1b2b,#0a1522);border:1px solid var(--line);border-radius:20px;padding:17px;margin:12px 0;box-shadow:var(--shadow)}h2{font-size:20px;margin:0 0 6px}.subtitle,.hint{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 14px}.grid,.stats{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field label{display:block;color:#b9c8d6;font-size:12px;font-weight:800;margin:0 0 6px}.field input,.field select{width:100%;min-height:48px;border:1px solid #2d4156;border-radius:13px;background:#071321;color:#f4f8fb;padding:10px 12px;font:inherit;outline:none}.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2ea7ff1c}.wide{grid-column:1/-1}.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.btn{border:0;border-radius:13px;min-height:48px;padding:10px 12px;background:linear-gradient(180deg,#1598ef,#0869b9);color:white;font:inherit;font-weight:850;cursor:pointer}.btn.secondary{background:#172638;color:#d9e3ec;border:1px solid #2b4055}.stats{margin-top:12px}.stat{background:#091624;border:1px solid #1d3044;border-radius:14px;padding:12px}.stat span{display:block;color:#7f95aa;font-size:11px}.stat b{display:block;font-size:18px;margin-top:2px}.chart{background:#07121f;border:1px solid #1b3045;border-radius:16px;padding:8px;margin-top:12px;overflow:hidden}.chart canvas{width:100%;height:245px;display:block}.tablewrap{overflow:auto;margin-top:12px;border:1px solid #1c3043;border-radius:14px}.tablewrap table{width:100%;border-collapse:collapse;min-width:420px;background:#091522}.tablewrap th,.tablewrap td{padding:9px 8px;border-bottom:1px solid #1a2c3e;text-align:right;font-size:12px}.tablewrap th{color:#7e95aa;font-size:11px}.tablewrap th:first-child,.tablewrap td:first-child{text-align:left}.tablewrap tr:last-child td{border-bottom:0}.hi{font-weight:850;color:#fff}.note{margin-top:12px;padding:12px 13px;border:1px solid #263b50;border-radius:14px;background:#0a1725;color:#a9bac9;font-size:12px;line-height:1.55}.note b{color:#e7eef5}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#0b6fba;color:#dff2ff;font-size:10px;font-weight:900;margin-left:5px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#8ed2ff;background:#071321;border:1px solid #1b354b;border-radius:10px;padding:10px;margin-top:10px;font-size:12px;overflow:auto}.sectionhead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.tiny{color:#6f879d;font-size:11px}.footer{text-align:center;color:#52687d;font-size:11px;margin-top:16px}
+@media(max-width:560px){.grid,.stats{grid-template-columns:1fr 1fr}.brand h1{font-size:27px}.tab{font-size:12px}.tab small{font-size:9px}.card{padding:14px}.btnrow{grid-template-columns:1fr 1fr}}
+@media print{body{background:#fff;color:#111}.top{display:none}.section{display:none!important}.section.active{display:block!important}.card{box-shadow:none;background:#fff;border:1px solid #ccc;color:#111}.field input,.field select,.tablewrap table{color:#111;background:#fff}.no-print{display:none!important}.note,.formula{color:#333;background:#fff;border-color:#ccc}}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+  <div class="brand">
+    <div class="logo" aria-label="MyPipe Logo">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 16h17c8 0 15 7 15 15v17" stroke="#132334" stroke-width="10" stroke-linecap="round"/>
+        <path d="M14 16h17c8 0 15 7 15 15v17" stroke="#dce5ec" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="46" cy="48" r="8" fill="#0a1624" stroke="#2ea7ff" stroke-width="3"/>
+        <path d="M43 48h6M46 45v6" stroke="#eaf6ff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div><h1>MyPipe</h1><p>Rohr · Bogen · Sattelschnitt</p></div>
+  </div>
+  <nav class="tabs no-print" aria-label="Funktionen">
+    <button class="tab active" data-tab="straight">① Gerader Schnitt<small>Schrägschnitt</small></button>
+    <button class="tab" data-tab="bend">② Rohrbogen<small>Winkel & Radius</small></button>
+    <button class="tab" data-tab="saddle">③ Sattelschnitt<small>Rohr auf Rohr</small></button>
+  </nav>
+</header>
+
+<section id="straight" class="section active">
+  <div class="card"><h2>Gerader Rohrschnitt</h2><p class="subtitle">Schnittlinie über den Rohrumfang berechnen und als Anreißtabelle ausgeben.</p>
+    <div class="grid">
+      <div class="field"><label>Winkel (°)</label><input id="angle" type="number" value="2" step=".01" min="0"></div>
+      <div class="field"><label>Rohrdurchmesser (mm)</label><input id="diameter" type="number" value="800" step="1" min="1"></div>
+      <div class="field"><label>Abstand Anreißpunkte (mm)</label><input id="spacing" type="number" value="100" step="1" min="1"></div>
+      <div class="field"><label>Nullpunkt</label><select id="start"><option value="high">höchster Punkt</option><option value="low">tiefster Punkt</option></select></div>
+    </div>
+    <div class="btnrow no-print"><button class="btn" onclick="window.print()">Drucken</button><button class="btn secondary" onclick="resetStraight()">Zurücksetzen</button></div>
+  </div>
+  <div class="card"><h2>Ergebnis</h2><div class="stats"><div class="stat"><span>Rohrumfang</span><b id="circ">–</b></div><div class="stat"><span>max. Höhenunterschied</span><b id="max">–</b></div></div><div class="chart"><canvas id="chart"></canvas></div><div class="tablewrap"><table><thead><tr><th>Abstand</th><th>Höhe</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+</section>
+
+<section id="bend" class="section">
+  <div class="card"><div class="sectionhead"><div><h2>Rohrbogen</h2><p class="subtitle">Ausgangsbogen auf einen beliebigen Restwinkel kürzen.</p></div><span class="badge">FUNKTION 2</span></div>
+    <div class="grid">
+      <div class="field"><label>Rohrdurchmesser (mm)</label><input id="bendD" type="number" value="100" step="1" min="1"></div>
+      <div class="field"><label>Ausgangswinkel (°)</label><input id="bendStartAngle" type="number" value="90" step=".1" min=".1" max="360"></div>
+      <div class="field"><label>Gewünschter Winkel (°)</label><input id="bendTargetAngle" type="number" value="45" step=".1" min=".1" max="360"></div>
+      <div class="field"><label>Radiusart</label><select id="radiusMode"><option value="1.5">Standard 1,5 × D</option><option value="1">Standard 1 × D</option><option value="2">Standard 2 × D</option><option value="3">Standard 3 × D</option><option value="5">Standard 5 × D</option><option value="custom">Eigener Radius</option></select></div>
+      <div class="field" id="customRadiusBox" style="display:none"><label>Eigener Biegeradius (mm)</label><input id="customRadius" type="number" value="150" step="1" min="1"></div>
+      <div class="field"><label>Anreißpunkte rund ums Rohr</label><input id="bendPoints" type="number" value="8" step="1" min="4" max="360"></div>
+    </div>
+  </div>
+  <div class="card"><h2>Ergebnis</h2><div class="stats"><div class="stat"><span>Biegeradius Mitte</span><b id="bendR">–</b></div><div class="stat"><span>volle 90°-Bogenlänge</span><b id="full90">–</b></div><div class="stat"><span>Ziel-Bogenlänge</span><b id="targetArc">–</b></div><div class="stat"><span>abzuschneidende Länge</span><b id="removeArc">–</b></div></div>
+    <div class="note"><b>Anzeichnen:</b> Vom Ende des vorhandenen Bogens entlang der Rohr-Mittellinie um das Rückmaß zurückmessen. Die Tabelle berücksichtigt die unterschiedlichen Mantellinien rund um den Bogen.</div>
+    <div class="chart"><canvas id="bendChart"></canvas></div>
+    <div class="tablewrap"><table><thead><tr><th>Punkt</th><th>Umfangsposition</th><th>Seite</th><th>Rückmaß</th></tr></thead><tbody id="bendMarkRows"></tbody></table></div>
+  </div>
+</section>
+
+<section id="saddle" class="section">
+  <div class="card"><div class="sectionhead"><div><h2>Rohr auf Rohr – Sattelschnitt</h2><p class="subtitle">Zum Beispiel Ø100 Abzweig auf Ø600 Hauptrohr. Die Anzahl der Anreißpunkte kannst du frei wählen.</p></div><span class="badge">FUNKTION 3</span></div>
+    <div class="grid">
+      <div class="field"><label>Hauptrohr Ø außen (mm)</label><input id="mainD" type="number" value="600" step="1" min="1"></div>
+      <div class="field"><label>Abzweigrohr Ø außen (mm)</label><input id="branchD" type="number" value="100" step="1" min="1"></div>
+      <div class="field"><label>Anschlusswinkel (°)</label><input id="saddleAngle" type="number" value="90" step=".1" min="1" max="179"></div>
+      <div class="field"><label>Anzahl Anreißpunkte</label><input id="saddlePoints" type="number" value="16" step="1" min="4" max="360"></div>
+    </div>
+    <div class="btnrow no-print"><button class="btn" onclick="window.print()">Sattelschnitt drucken</button><button class="btn secondary" onclick="resetSaddle()">Zurücksetzen</button></div>
+    <div class="formula">90°-Geometrie: Rücksprung = R − √(R² − (r · sin θ)²)</div>
+  </div>
+  <div class="card"><h2>Anreißdaten</h2><div class="stats"><div class="stat"><span>Hauptrohr Radius</span><b id="mainR">–</b></div><div class="stat"><span>Abzweigrohr Umfang</span><b id="branchCirc">–</b></div><div class="stat"><span>Punktabstand am Umfang</span><b id="saddleSpacing">–</b></div><div class="stat"><span>max. Rücksprung</span><b id="maxCutback">–</b></div></div>
+    <div class="note"><b>So wird angezeichnet:</b> Auf dem Abzweigrohr den Umfang in die gewählte Punktzahl teilen. Die Werte aus der Tabelle jeweils vom langen Punkt aus nach innen messen. Bei 90° ist das Profil symmetrisch; gegenüberliegende Punkte haben denselben Wert.</div>
+    <div class="chart"><canvas id="saddleChart"></canvas></div>
+    <div class="tablewrap"><table><thead><tr><th>Punkt</th><th>Winkel</th><th>Umfang ab Start</th><th>Rücksprung</th></tr></thead><tbody id="saddleRows"></tbody></table></div>
+  </div>
+  <div class="card note"><b>Wichtig:</b> Die Tabelle beschreibt die geometrische Außenkontur des Sattelschnitts. Schweißnahtvorbereitung, Fase, Wurzelsteg und Luftspalt richten sich nach Wanddicke, Werkstoff und deiner Schweißanweisung/WPS.</div>
+</section>
+
+<div class="footer">MyPipe · alle Berechnungen laufen direkt auf dem Gerät</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>parseFloat($(id).value)||0;
+function showTab(name){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===name));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));if(name==='straight')straight();if(name==='bend')bend();if(name==='saddle')saddle()}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+
+function sv(){let a=num('angle'),d=Math.max(num('diameter'),1),s=Math.max(num('spacing'),1);return{a,d,s,c:Math.PI*d,r:d/2,t:Math.tan(a*Math.PI/180),start:$('start').value}}
+function hAt(x,v){let y=v.r*(1-Math.cos(x/v.c*2*Math.PI))*v.t;return v.start==='low'?v.d*v.t-y:y}
+function straight(){let v=sv();$('circ').textContent=v.c.toFixed(1)+' mm';$('max').textContent=(v.d*v.t).toFixed(2)+' mm';let r=$('rows');r.innerHTML='';for(let x=0;x<=v.c+.001;x+=v.s){x=Math.min(x,v.c);r.innerHTML+=`<tr><td>${x.toFixed(1)} mm</td><td class="hi">${hAt(x,v).toFixed(2)} mm</td></tr>`;if(x>=v.c)break}drawStraight(v)}
+function drawStraight(v){let c=$('chart'),d=devicePixelRatio||1,w=c.clientWidth||600,h=245;c.width=w*d;c.height=h*d;let x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);let p={l:38,r:12,t:16,b:28},pw=w-p.l-p.r,ph=h-p.t-p.b,m=Math.max(v.d*v.t,.1);x.strokeStyle='#26384c';x.beginPath();x.moveTo(p.l,p.t);x.lineTo(p.l,h-p.b);x.lineTo(w-p.r,h-p.b);x.stroke();x.strokeStyle='#2ea7ff';x.lineWidth=3;x.beginPath();for(let i=0;i<=240;i++){let q=v.c*i/240,y=hAt(q,v),px=p.l+pw*q/v.c,py=h-p.b-ph*y/m;i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
+function resetStraight(){$('angle').value=2;$('diameter').value=800;$('spacing').value=100;$('start').value='high';straight()}
+
+function bend(){let d=Math.max(num('bendD'),1),start=Math.max(num('bendStartAngle'),.1),target=Math.min(Math.max(num('bendTargetAngle'),.1),start),mode=$('radiusMode').value,R=mode==='custom'?Math.max(num('customRadius'),1):d*parseFloat(mode);let sa=R*start*Math.PI/180,ta=R*target*Math.PI/180,rm=Math.max(0,sa-ta);$('bendR').textContent=R.toFixed(1)+' mm';$('full90').textContent=(R*Math.PI/2).toFixed(1)+' mm';$('targetArc').textContent=ta.toFixed(1)+' mm';$('removeArc').textContent=rm.toFixed(1)+' mm';let n=Math.min(360,Math.max(4,Math.round(num('bendPoints')))),br=[];for(let i=0;i<n;i++){let deg=i*360/n,rad=deg*Math.PI/180,surfaceR=R+(d/2)*Math.cos(rad),measure=Math.max(0,(start-target)*Math.PI/180*surfaceR),side=Math.cos(rad)>.707?'außen':Math.cos(rad)<-.707?'innen':Math.sin(rad)>.707?'oben':Math.sin(rad)<-.707?'unten':'seitlich';br.push(`<tr><td>${i+1}</td><td>${deg.toFixed(1)}°</td><td>${side}</td><td class="hi">${measure.toFixed(1)} mm</td></tr>`)}$('bendMarkRows').innerHTML=br.join('');drawBend(R,start,target)}
+function drawBend(R,start,target){let c=$('bendChart'),d=devicePixelRatio||1,w=c.clientWidth||600,h=245;c.width=w*d;c.height=h*d;let x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);let cx=w/2,cy=h-28,scale=Math.min((w-70)/(R*1.9),(h-60)/(R*1.15)),pt=z=>[cx+Math.cos(z*Math.PI/180)*R*scale,cy-Math.sin(z*Math.PI/180)*R*scale];x.strokeStyle='#60778d';x.lineWidth=20;x.lineCap='round';x.beginPath();for(let i=0;i<=90;i++){let p=pt(i);i?x.lineTo(...p):x.moveTo(...p)}x.stroke();x.strokeStyle='#2ea7ff';x.lineWidth=4;x.beginPath();for(let i=0;i<=100;i++){let p=pt((start-target)*i/100);i?x.lineTo(...p):x.moveTo(...p)}x.stroke();x.fillStyle='#a9bed1';x.font='12px system-ui';x.fillText(start.toFixed(0)+'° Ausgang',15,20);x.fillText('Ziel: '+target.toFixed(1)+'°',15,39)}
+
+function saddle(){let D=Math.max(num('mainD'),.1),d=Math.max(num('branchD'),.1),n=Math.min(360,Math.max(4,Math.round(num('saddlePoints')))),R=D/2,r=d/2,alpha=Math.max(1,Math.min(179,num('saddleAngle'))),circ=Math.PI*d,spacing=circ/n;let rows=[],max=0;for(let i=0;i<n;i++){let deg=i*360/n,th=deg*Math.PI/180,cut=saddleCut(D,d,alpha,th);max=Math.max(max,cut);rows.push(`<tr><td>${i+1}</td><td>${deg.toFixed(1)}°</td><td>${(i*spacing).toFixed(1)} mm</td><td class="hi">${cut.toFixed(2)} mm</td></tr>`)}$('mainR').textContent=R.toFixed(1)+' mm';$('branchCirc').textContent=circ.toFixed(1)+' mm';$('saddleSpacing').textContent=spacing.toFixed(2)+' mm';$('maxCutback').textContent=max.toFixed(2)+' mm';$('saddleRows').innerHTML=rows.join('');drawSaddle(D,d,n,alpha)}
+function saddleCut(D,d,alpha,th){let R=D/2,r=d/2;if(Math.abs(alpha-90)<1e-9)return R-Math.sqrt(Math.max(0,R*R-Math.pow(r*Math.sin(th),2)));let a=alpha*Math.PI/180,s=Math.sin(a),co=Math.cos(a);if(Math.abs(s)<1e-9)return 0;let disc=Math.max(0,R*R-Math.pow(r*Math.cos(th),2));let t1=(-r*Math.sin(th)*co+Math.sqrt(disc))/s;let t2=(-r*Math.sin(th)*co-Math.sqrt(disc))/s;let t=Math.max(t1,t2),ref=R/s;return Math.max(0,ref-t)}
+function drawSaddle(D,d,n,alpha){let c=$('saddleChart'),dp=devicePixelRatio||1,w=c.clientWidth||600,h=245;c.width=w*dp;c.height=h*dp;let x=c.getContext('2d');x.setTransform(dp,0,0,dp,0,0);x.clearRect(0,0,w,h);let pad={l:40,r:12,t:18,b:30},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;let vals=[];for(let i=0;i<=240;i++)vals.push(saddleCut(D,d,alpha,2*Math.PI*i/240));let min=Math.min(...vals),max=Math.max(...vals),span=Math.max(max-min,.1);x.strokeStyle='#26384c';x.beginPath();x.moveTo(pad.l,pad.t);x.lineTo(pad.l,h-pad.b);x.lineTo(w-pad.r,h-pad.b);x.stroke();x.strokeStyle='#2ea7ff';x.lineWidth=3;x.beginPath();for(let i=0;i<vals.length;i++){let px=pad.l+pw*i/240,py=pad.t+ph*(1-(vals[i]-min)/span);i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke();x.fillStyle='#91a4b8';x.font='11px system-ui';x.fillText('0°',pad.l,13);x.fillText('180°',Math.max(pad.l+pw/2-12,50),13);x.fillText('360°',w-pad.r-24,13);x.fillText('Winkel / Umfang →',w-115,h-8);x.fillText('Rücksprung',4,30);x.fillText('Anschluss: '+alpha.toFixed(1)+'°',pad.l+4,h-8)}
+function resetSaddle(){$('mainD').value=600;$('branchD').value=100;$('saddleAngle').value=90;$('saddlePoints').value=16;saddle()}
+
+$('radiusMode').addEventListener('change',()=>{$('customRadiusBox').style.display=$('radiusMode').value==='custom'?'block':'none';bend()});
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',()=>{if($('straight').classList.contains('active'))straight();if($('bend').classList.contains('active'))bend();if($('saddle').classList.contains('active'))saddle()}));
+window.addEventListener('resize',()=>{if($('straight').classList.contains('active'))straight();if($('bend').classList.contains('active'))bend();if($('saddle').classList.contains('active'))saddle()});
+straight();bend();saddle();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
